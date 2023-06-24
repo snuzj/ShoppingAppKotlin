@@ -2,4 +2,6 @@
     <string name="app_name">ShoppingApp</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="noAccount">Không có tài khoản? <b>Đăng ký</b></string>
+    <string name="haveAccount">Đã có tài khoản? <b>Đăng nhập</b></string>
 </resources>

@@ -29,7 +29,8 @@
                 android:layout_width="150dp"
                 android:layout_height="150dp"
                 android:layout_gravity="center_horizontal"
-                android:adjustViewBounds="true"/>
+                android:adjustViewBounds="true"
+                android:src="@drawable/ic_hufu"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/loginGoogleBtn"

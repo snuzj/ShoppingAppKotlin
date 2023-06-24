@@ -28,19 +28,43 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.menu_chats->{
-                    showChatsFragment()
-                    true
+                    if(auth.currentUser == null){
+                        Utils.toast(this,"Yêu cầu đăng nhập")
+                        startLoginOptions()
+                        false
+                    }
+                    else{
+                        showChatsFragment()
+                        true
+                    }
+
                 }
                 R.id.menu_sell->{
                     true
                 }
                 R.id.menu_my_ads->{
-                    showMyAdsFragment()
-                    true
+                    if(auth.currentUser == null){
+                        Utils.toast(this,"Yêu cầu đăng nhập")
+                        startLoginOptions()
+                        false
+                    }
+                    else{
+                        showMyAdsFragment()
+                        true
+                    }
+
                 }
                 R.id.menu_account->{
-                    showAccountFragment()
-                    true
+                    if(auth.currentUser == null){
+                        Utils.toast(this,"Yêu cầu đăng nhập")
+                        startLoginOptions()
+                        false
+                    }
+                    else{
+                        showAccountFragment()
+                        true
+                    }
+
                 }
                 else->{
                     false
