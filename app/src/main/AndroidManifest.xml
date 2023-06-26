@@ -9,12 +9,15 @@
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@drawable/ic_hufu"
-        android:label="@string/app_name"
+        android:label="Hufuholic"
         android:roundIcon="@drawable/ic_hufu"
         android:supportsRtl="true"
         android:theme="@style/Theme.ShoppingApp"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        <activity
+            android:name=".LoginPhoneActivity"
+            android:exported="false" />
         <activity
             android:name=".RegisterEmailActivity"
             android:exported="false" />

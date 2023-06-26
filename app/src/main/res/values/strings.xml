@@ -4,4 +4,5 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="noAccount">Không có tài khoản? <b>Đăng ký</b></string>
     <string name="haveAccount">Đã có tài khoản? <b>Đăng nhập</b></string>
+    <string name="resendOtp">Bạn chưa nhận được mã OTP? <b>Gửi lại</b></string>
 </resources>

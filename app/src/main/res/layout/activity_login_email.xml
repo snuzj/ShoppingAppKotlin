@@ -46,9 +46,9 @@
             android:id="@+id/profileIv"
             android:layout_width="70dp"
             android:layout_height="70dp"
-            android:src="@drawable/round_person_24"
+            android:src="@drawable/ic_hufu"
             android:layout_centerHorizontal="true"
-            android:background="@color/lightgray"
+            android:background="@android:color/transparent"
             app:shapeAppearanceOverlay="@style/ImageStyle_Circle"/>
 
         <TextView
