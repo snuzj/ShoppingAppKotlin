@@ -1,6 +1,6 @@
 @file:Suppress("DEPRECATION")
 
-package com.snuzj.shoppingapp
+package com.snuzj.shoppingapp.activities
 
 import android.app.ProgressDialog
 import android.content.Intent
@@ -15,6 +15,8 @@ import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.database.FirebaseDatabase
+import com.snuzj.shoppingapp.R
+import com.snuzj.shoppingapp.Utils
 import com.snuzj.shoppingapp.databinding.ActivityLoginOptionsBinding
 
 class LoginOptionsActivity : AppCompatActivity() {
@@ -92,12 +94,12 @@ class LoginOptionsActivity : AppCompatActivity() {
             catch(e: Exception){
                 //sign in failed, show exception
                 Log.e(TAG, "googleSignInARL: ", e)
-                Utils.toast(this,"Đăng nhập thất bại vì ${e.message}")
+                Utils.toast(this, "Đăng nhập thất bại vì ${e.message}")
             }
         }
         else{
             //user has cancelled Google SignIn
-            Utils.toast(this,"Hoàn tác thành công")
+            Utils.toast(this, "Hoàn tác thành công")
         }
     }
 
@@ -156,13 +158,13 @@ class LoginOptionsActivity : AppCompatActivity() {
                 Log.d(TAG, "updateUserInfoDb: User info saved")
                 progressDialog.dismiss()
 
-                startActivity(Intent(this,MainActivity::class.java))
+                startActivity(Intent(this, MainActivity::class.java))
                 finishAffinity()
             }
             .addOnFailureListener { e->
                 progressDialog.dismiss()
                 Log.e(TAG, "updateUserInfoDb: ", e)
-                Utils.toast(this,"Lưu thông tin thất bại vì ${e.message}")
+                Utils.toast(this, "Lưu thông tin thất bại vì ${e.message}")
             }
     }
 

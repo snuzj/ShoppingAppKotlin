@@ -1,4 +1,4 @@
-package com.snuzj.shoppingapp
+package com.snuzj.shoppingapp.activities
 
 import android.app.ProgressDialog
 import android.content.Intent
@@ -6,8 +6,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.util.Patterns
-import androidx.appcompat.app.AlertDialog
 import com.google.firebase.auth.FirebaseAuth
+import com.snuzj.shoppingapp.Utils
 import com.snuzj.shoppingapp.databinding.ActivityLoginEmailBinding
 
 class LoginEmailActivity : AppCompatActivity() {
@@ -42,7 +42,7 @@ class LoginEmailActivity : AppCompatActivity() {
 
         //handle click, go to register with email
         binding.noAccountTv.setOnClickListener {
-            startActivity(Intent(this,RegisterEmailActivity::class.java))
+            startActivity(Intent(this, RegisterEmailActivity::class.java))
         }
 
         //handle click, start login

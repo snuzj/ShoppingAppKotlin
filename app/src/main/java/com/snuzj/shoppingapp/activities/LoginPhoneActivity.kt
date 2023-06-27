@@ -1,6 +1,6 @@
 @file:Suppress("DEPRECATION")
 
-package com.snuzj.shoppingapp
+package com.snuzj.shoppingapp.activities
 
 import android.annotation.SuppressLint
 import android.app.ProgressDialog
@@ -17,6 +17,7 @@ import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.auth.PhoneAuthProvider.ForceResendingToken
 import com.google.firebase.auth.PhoneAuthProvider.OnVerificationStateChangedCallbacks
 import com.google.firebase.database.FirebaseDatabase
+import com.snuzj.shoppingapp.Utils
 import com.snuzj.shoppingapp.databinding.ActivityLoginPhoneBinding
 import java.util.concurrent.TimeUnit
 
@@ -141,7 +142,7 @@ class LoginPhoneActivity : AppCompatActivity() {
                 Log.e(TAG, "onVerificationFailed: ", e)
 
                 progressDialog.dismiss()
-                Utils.toast(this@LoginPhoneActivity,"${e.message}")
+                Utils.toast(this@LoginPhoneActivity, "${e.message}")
             }
 
             @SuppressLint("SetTextI18n")
@@ -159,7 +160,10 @@ class LoginPhoneActivity : AppCompatActivity() {
                 binding.phoneInputRl.visibility = View.INVISIBLE
                 binding.otpInputRl.visibility = View.VISIBLE
 
-                Utils.toast(this@LoginPhoneActivity, "Mã xác nhận OTP đã được gửi $phoneNumberWithCode")
+                Utils.toast(
+                    this@LoginPhoneActivity,
+                    "Mã xác nhận OTP đã được gửi $phoneNumberWithCode"
+                )
 
                 binding.loginLabelTv.text = "Hãy nhập mã OTP được gửi tới số $phoneNumberWithCode"
             }
@@ -193,7 +197,7 @@ class LoginPhoneActivity : AppCompatActivity() {
             .addOnFailureListener { e->
                 Log.e(TAG, "signInWithPhoneAuthCredential: ", e)
                 progressDialog.dismiss()
-                Utils.toast(this,"Đăng nhập thất bại vì ${e.message}")
+                Utils.toast(this, "Đăng nhập thất bại vì ${e.message}")
             }
             .addOnSuccessListener { authResult->
                 Log.d(TAG, "signInWithPhoneAuthCredential: Success")
@@ -204,7 +208,7 @@ class LoginPhoneActivity : AppCompatActivity() {
                 }
                 else{
                     Log.d(TAG, "signInWithPhoneAuthCredential: Existing User Logged In")
-                    startActivity(Intent(this,MainActivity::class.java))
+                    startActivity(Intent(this, MainActivity::class.java))
                     finishAffinity()
                 }
             }
@@ -224,7 +228,7 @@ class LoginPhoneActivity : AppCompatActivity() {
         hashMap["phoneNumber"] = phoneNumber
         hashMap["profileImageUrl"] = ""
         hashMap["dob"] = ""
-        hashMap["userType"] = "Email"
+        hashMap["userType"] = "Phone"
         hashMap["typingTo"] = ""
         hashMap["timestamp"] = timestamp
         hashMap["onlineStatus"] = true
@@ -243,7 +247,7 @@ class LoginPhoneActivity : AppCompatActivity() {
             .addOnFailureListener { e->
                 Log.e(TAG, "updateUserInfoDb: ", e)
                 progressDialog.dismiss()
-                Utils.toast(this,"Lưu thông tin người dùng thất bại vì ${e.message}")
+                Utils.toast(this, "Lưu thông tin người dùng thất bại vì ${e.message}")
             }
     }
 

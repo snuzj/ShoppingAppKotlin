@@ -1,4 +1,4 @@
-package com.snuzj.shoppingapp
+package com.snuzj.shoppingapp.activities
 
 import android.app.ProgressDialog
 import android.content.Intent
@@ -8,7 +8,7 @@ import android.util.Log
 import android.util.Patterns
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
-import com.snuzj.shoppingapp.databinding.ActivityLoginEmailBinding
+import com.snuzj.shoppingapp.Utils
 import com.snuzj.shoppingapp.databinding.ActivityRegisterEmailBinding
 
 class RegisterEmailActivity : AppCompatActivity() {
@@ -105,7 +105,7 @@ class RegisterEmailActivity : AppCompatActivity() {
             .addOnFailureListener {e->
                 Log.d(TAG, "registerUser: ",e)
                 progressDialog.dismiss()
-                Utils.toast(this,"Tạo tài khoản thất bại vì ${e.message}")
+                Utils.toast(this, "Tạo tài khoản thất bại vì ${e.message}")
             }
     }
 
@@ -139,14 +139,14 @@ class RegisterEmailActivity : AppCompatActivity() {
                 Log.d(TAG, "updateUserInfo: User registered...")
                 progressDialog.dismiss()
                 //start main
-                startActivity(Intent(this,MainActivity::class.java))
+                startActivity(Intent(this, MainActivity::class.java))
                 finishAffinity()//finish the current and all activities from back stack
             }
             .addOnFailureListener {e->
                 //firebase db save failed
                 Log.e(TAG, "updateUserInfo: ", e)
                 progressDialog.dismiss()
-                Utils.toast(this,"Lưu thông tin không thành công vì ${e.message}")
+                Utils.toast(this, "Lưu thông tin không thành công vì ${e.message}")
             }
 
 

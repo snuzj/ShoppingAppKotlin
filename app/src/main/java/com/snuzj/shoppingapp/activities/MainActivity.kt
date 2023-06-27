@@ -1,9 +1,14 @@
-package com.snuzj.shoppingapp
+package com.snuzj.shoppingapp.activities
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.google.firebase.auth.FirebaseAuth
+import com.snuzj.shoppingapp.fragments.AccountFragment
+import com.snuzj.shoppingapp.fragments.ChatsFragment
+import com.snuzj.shoppingapp.fragments.HomeFragment
+import com.snuzj.shoppingapp.R
+import com.snuzj.shoppingapp.Utils
 import com.snuzj.shoppingapp.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -23,13 +28,13 @@ class MainActivity : AppCompatActivity() {
 
         binding.bottomNv.setOnItemSelectedListener{item->
             when(item.itemId){
-                R.id.menu_home->{
+                R.id.menu_home ->{
                     showHomeFragment()
                     true
                 }
-                R.id.menu_chats->{
+                R.id.menu_chats ->{
                     if(auth.currentUser == null){
-                        Utils.toast(this,"Yêu cầu đăng nhập")
+                        Utils.toast(this, "Yêu cầu đăng nhập")
                         startLoginOptions()
                         false
                     }
@@ -39,12 +44,12 @@ class MainActivity : AppCompatActivity() {
                     }
 
                 }
-                R.id.menu_sell->{
+                R.id.menu_sell ->{
                     true
                 }
-                R.id.menu_my_ads->{
+                R.id.menu_my_ads ->{
                     if(auth.currentUser == null){
-                        Utils.toast(this,"Yêu cầu đăng nhập")
+                        Utils.toast(this, "Yêu cầu đăng nhập")
                         startLoginOptions()
                         false
                     }
@@ -54,9 +59,9 @@ class MainActivity : AppCompatActivity() {
                     }
 
                 }
-                R.id.menu_account->{
+                R.id.menu_account ->{
                     if(auth.currentUser == null){
-                        Utils.toast(this,"Yêu cầu đăng nhập")
+                        Utils.toast(this, "Yêu cầu đăng nhập")
                         startLoginOptions()
                         false
                     }
