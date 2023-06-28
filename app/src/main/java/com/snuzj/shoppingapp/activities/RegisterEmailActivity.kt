@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.snuzj.shoppingapp.activities
 
 import android.app.ProgressDialog

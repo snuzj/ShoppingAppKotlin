@@ -5,4 +5,5 @@
     <string name="noAccount">Không có tài khoản? <b>Đăng ký</b></string>
     <string name="haveAccount">Đã có tài khoản? <b>Đăng nhập</b></string>
     <string name="resendOtp">Bạn chưa nhận được mã OTP? <b>Gửi lại</b></string>
+    <string name="forgotpass"><b>Quên mật khẩu?</b></string>
 </resources>

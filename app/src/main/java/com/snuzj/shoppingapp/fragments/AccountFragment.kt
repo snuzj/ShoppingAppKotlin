@@ -1,5 +1,6 @@
 package com.snuzj.shoppingapp.fragments
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -16,6 +17,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.snuzj.shoppingapp.R
 import com.snuzj.shoppingapp.Utils
+import com.snuzj.shoppingapp.activities.ChangePasswordActivity
 import com.snuzj.shoppingapp.activities.MainActivity
 import com.snuzj.shoppingapp.activities.ProfileEditActivity
 import com.snuzj.shoppingapp.databinding.FragmentAccountBinding
@@ -38,7 +40,7 @@ class AccountFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         binding = FragmentAccountBinding.inflate(layoutInflater, container, false)
         return binding.root
@@ -59,12 +61,17 @@ class AccountFragment : Fragment() {
         binding.editProfileCv.setOnClickListener{
             startActivity(Intent(mContext,ProfileEditActivity::class.java))
         }
+
+        binding.changePasswordCv.setOnClickListener {
+            startActivity(Intent(mContext, ChangePasswordActivity::class.java))
+        }
     }
 
     private fun loadMyInfo() {
         val ref = FirebaseDatabase.getInstance().getReference("Users")
             ref.child("${firebaseAuth.uid}")
                 .addValueEventListener(object : ValueEventListener {
+                @SuppressLint("SetTextI18n")
                 override fun onDataChange(snapshot: DataSnapshot) {
                     //get user info
                     val name = "${snapshot.child("name").value}"

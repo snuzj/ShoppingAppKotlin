@@ -179,6 +179,26 @@
                 android:layout_height="wrap_content"
                 android:drawableEnd="@drawable/baseline_navigate_next_24"
                 android:text="Thiết lập tài khoản" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/changePasswordCv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?selectableItemBackground"
+            android:minHeight="48dp"
+            app:cardCornerRadius="10dp"
+            app:contentPadding="10dp">
+
+            <TextView
+                style="@style/TextAppearance.MaterialComponents.Body1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableEnd="@drawable/baseline_navigate_next_24"
+                android:text="Đổi mật khẩu" />
 
         </com.google.android.material.card.MaterialCardView>
 
@@ -186,7 +206,9 @@
             android:id="@+id/logoutCv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="2dp"
+            android:layout_marginStart="2dp"
+            android:layout_marginEnd="2dp"
+            android:layout_marginTop="20dp"
             android:clickable="true"
             android:focusable="true"
             android:foreground="?selectableItemBackground"

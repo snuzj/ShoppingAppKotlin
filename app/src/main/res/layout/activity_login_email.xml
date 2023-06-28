@@ -112,7 +112,16 @@
             android:text="@string/noAccount"
             android:layout_marginStart="10dp"
             android:layout_below="@id/passwordTil"
-            android:layout_marginTop="5dp" />
+            android:layout_marginTop="10dp" />
+
+        <TextView
+            android:id="@+id/forgotPasswordTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/TextAppearance.MaterialComponents.Body2"
+            android:text="@string/forgotpass"
+            android:layout_below="@id/noAccountTv"
+            android:layout_margin="10dp"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/loginBtn"
