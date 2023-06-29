@@ -4,6 +4,7 @@ package com.snuzj.shoppingapp.activities
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.app.DatePickerDialog
 import android.app.ProgressDialog
 import android.content.ContentValues
 import android.content.Intent
@@ -27,6 +28,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.snuzj.shoppingapp.R
 import com.snuzj.shoppingapp.Utils
 import com.snuzj.shoppingapp.databinding.ActivityProfileEditBinding
+import java.util.Calendar
 
 class ProfileEditActivity : AppCompatActivity() {
 
@@ -40,11 +42,13 @@ class ProfileEditActivity : AppCompatActivity() {
 
     private lateinit var progressDialog: ProgressDialog
 
-    private lateinit var firebaseUser: FirebaseUser
+    private var firebaseUser: FirebaseUser? = null
 
     private var myUserType = ""
 
     private var imageUri: Uri? = null
+
+    private var selectedDate: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,7 +62,7 @@ class ProfileEditActivity : AppCompatActivity() {
         firebaseAuth = FirebaseAuth.getInstance()
         loadMyInfo()
 
-        firebaseUser = firebaseAuth.currentUser!!
+        firebaseUser = firebaseAuth.currentUser
 
 
         binding.backBtn.setOnClickListener {
@@ -66,6 +70,21 @@ class ProfileEditActivity : AppCompatActivity() {
         }
         binding.profileImagePickFab.setOnClickListener {
             imagePickDialog()
+        }
+
+        binding.dobEt.setOnClickListener {
+            val currentDate = Calendar.getInstance()
+            val year = currentDate.get(Calendar.YEAR)
+            val month = currentDate.get(Calendar.MONTH)
+            val day = currentDate.get(Calendar.DAY_OF_MONTH)
+
+            val datePickerDialog = DatePickerDialog(this, { _, selectedYear, selectedMonth, selectedDay ->
+                val formattedDate = String.format("%02d/%02d/%04d", selectedDay, selectedMonth + 1, selectedYear)
+                selectedDate = formattedDate
+                binding.dobEt.setText(formattedDate)
+            }, year, month, day)
+
+            datePickerDialog.show()
         }
 
         binding.updateBtn.setOnClickListener {
@@ -95,7 +114,7 @@ class ProfileEditActivity : AppCompatActivity() {
         progressDialog.setMessage("Đang xóa tài khoản của bạn")
         progressDialog.show()
 
-        firebaseUser.delete()
+        firebaseUser!!.delete()
             .addOnSuccessListener {
                 Log.d(TAG, "deleteAccount: deleted successully")
 
@@ -137,7 +156,7 @@ class ProfileEditActivity : AppCompatActivity() {
             .addOnFailureListener { e->
                 Log.e(TAG, "deleteAccount: ", e)
                 progressDialog.dismiss()
-                Utils.toast(this,"Xoá thất bại ${e.message}")
+                Utils.toast(this,"Hãy đang nhập lại để xóa tài khoản")
 
             }
     }
@@ -219,9 +238,9 @@ class ProfileEditActivity : AppCompatActivity() {
             hashMap["profileImageUrl"] = uploadedImageUrl
 
         }
-        if (myUserType.equals("Phone", true)){
+        else if (myUserType.equals("Phone", true)){
             //if userType is Phone, allow change Email
-            hashMap["email"] = email
+            hashMap["email"] = "$email"
         }
         else if(myUserType.equals("Email",true) || myUserType.equals("Google",true)){
             //if userType is Email or Google, allow change Phone number
@@ -260,7 +279,7 @@ class ProfileEditActivity : AppCompatActivity() {
                     val phoneNumber = "${snapshot.child("phoneNumber").value}"
                     val profileImageUrl = "${snapshot.child("profileImageUrl").value}"
                     var timestamp = "${snapshot.child("timestamp").value}"
-                    val userType = "${snapshot.child("userType").value}"
+                    myUserType = "${snapshot.child("userType").value}"
 
                     val phone = phoneCode + phoneNumber
 

@@ -101,7 +101,7 @@ class AccountFragment : Fragment() {
 
     private fun loadMyInfo() {
         val ref = FirebaseDatabase.getInstance().getReference("Users")
-            ref.child("${firebaseAuth.uid}")
+        ref.child("${firebaseAuth.uid}")
                 .addValueEventListener(object : ValueEventListener {
                 @SuppressLint("SetTextI18n")
                 override fun onDataChange(snapshot: DataSnapshot) {
