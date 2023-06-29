@@ -3,6 +3,7 @@
 package com.snuzj.shoppingapp.activities
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.app.ProgressDialog
 import android.content.ContentValues
 import android.content.Intent
@@ -17,6 +18,7 @@ import android.widget.PopupMenu
 import androidx.activity.result.contract.ActivityResultContracts
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -38,6 +40,8 @@ class ProfileEditActivity : AppCompatActivity() {
 
     private lateinit var progressDialog: ProgressDialog
 
+    private lateinit var firebaseUser: FirebaseUser
+
     private var myUserType = ""
 
     private var imageUri: Uri? = null
@@ -54,6 +58,9 @@ class ProfileEditActivity : AppCompatActivity() {
         firebaseAuth = FirebaseAuth.getInstance()
         loadMyInfo()
 
+        firebaseUser = firebaseAuth.currentUser!!
+
+
         binding.backBtn.setOnClickListener {
             onBackPressed()
         }
@@ -65,7 +72,82 @@ class ProfileEditActivity : AppCompatActivity() {
             validateData()
         }
 
+        binding.deleteAccountCv.setOnClickListener {
+            val alertDialogBuilder = AlertDialog.Builder(this)
+            alertDialogBuilder.setMessage("Bạn chắc chắn muốn xóa tài khoản này không?")
+            alertDialogBuilder.setPositiveButton("Có") { dialog, _ ->
+                deleteAccount()
+                dialog.dismiss()
+            }
+            alertDialogBuilder.setNegativeButton("Không") { dialog, _ ->
+                dialog.dismiss()
+            }
+            val alertDialog = alertDialogBuilder.create()
+            alertDialog.show()
+        }
+
     }
+
+    //1.Delete user account from account in Firebase Authentication
+    private fun deleteAccount() {
+        //user account deleted
+        Log.d(TAG, "deleteAccount: ")
+        progressDialog.setMessage("Đang xóa tài khoản của bạn")
+        progressDialog.show()
+
+        firebaseUser.delete()
+            .addOnSuccessListener {
+                Log.d(TAG, "deleteAccount: deleted successully")
+
+                //2. remove user's ads
+                val refUserAds = FirebaseDatabase.getInstance().getReference("Users")
+                refUserAds.orderByChild("uid").equalTo(firebaseAuth.uid)
+                    .addValueEventListener(object : ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            for (ds in snapshot.children){
+                                ds.ref.removeValue()
+                            }
+                            //3.remove user data
+                            progressDialog.setMessage("Đang xóa dữ liệu người dùng")
+                            val refUsers = FirebaseDatabase.getInstance().getReference("Users")
+                            refUsers.child(firebaseAuth.uid!!).removeValue()
+                                .addOnSuccessListener {
+                                    Log.d(TAG, "onDataChange: deleted successfully")
+                                    progressDialog.dismiss()
+                                    startMainActivity()
+                                }
+                                .addOnFailureListener {e->
+                                    Log.e(TAG, "onDataChange: ", e)
+                                    progressDialog.dismiss()
+                                    Utils.toast(this@ProfileEditActivity,"Hãy đang nhập lại để xóa tài khoản")
+                                    startMainActivity()
+
+                                }
+
+
+                        }
+
+                        override fun onCancelled(error: DatabaseError) {
+
+                        }
+
+
+                    })
+            }
+            .addOnFailureListener { e->
+                Log.e(TAG, "deleteAccount: ", e)
+                progressDialog.dismiss()
+                Utils.toast(this,"Xoá thất bại ${e.message}")
+
+            }
+    }
+
+    private fun startMainActivity() {
+        startActivity(Intent(this,MainActivity::class.java))
+        finishAffinity()
+    }
+
+
 
     private var name = ""
     private var dob = ""
@@ -350,4 +432,9 @@ class ProfileEditActivity : AppCompatActivity() {
                 Utils.toast(this,"Đã hoàn tác")
             }
         }
+
+    @Deprecated("Deprecated in Java")
+    override fun onBackPressed() {
+        startMainActivity()
+    }
 }

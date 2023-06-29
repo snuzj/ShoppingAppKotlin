@@ -1,6 +1,9 @@
+@file:Suppress("DEPRECATION")
+
 package com.snuzj.shoppingapp.fragments
 
 import android.annotation.SuppressLint
+import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -31,6 +34,7 @@ class AccountFragment : Fragment() {
     private lateinit var binding: FragmentAccountBinding
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var mContext: Context
+    private lateinit var progressDialog: ProgressDialog
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -49,6 +53,10 @@ class AccountFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        progressDialog = ProgressDialog(mContext)
+        progressDialog.setMessage("Đang tải...")
+        progressDialog.setCanceledOnTouchOutside(false)
+
         firebaseAuth = FirebaseAuth.getInstance()
         loadMyInfo()
 
@@ -65,6 +73,30 @@ class AccountFragment : Fragment() {
         binding.changePasswordCv.setOnClickListener {
             startActivity(Intent(mContext, ChangePasswordActivity::class.java))
         }
+
+        binding.verifyAccountCv.setOnClickListener {
+            verifyAccount()
+        }
+    }
+
+    private fun verifyAccount() {
+        Log.d(TAG, "verifyAccount: ")
+        progressDialog.setMessage("Chúng tôi sẽ gửi đường dẫn xác minh tài khoản đến mail của bạn")
+        progressDialog.show()
+
+        firebaseAuth.currentUser!!.sendEmailVerification()
+            .addOnSuccessListener {
+                Log.d(TAG, "verifyAccount: Sent successfully")
+                progressDialog.dismiss()
+                Utils.toast(mContext,"Gửi thành công. Hãy kiểm tra hộp thư của bạn")
+            }
+            .addOnFailureListener {e->
+                Log.e(TAG, "verifyAccount: ", e)
+                progressDialog.dismiss()
+                Utils.toast(mContext,"Gửi thất bại vì mail không chính xác")
+            }
+
+
     }
 
     private fun loadMyInfo() {
@@ -105,13 +137,16 @@ class AccountFragment : Fragment() {
                     if(userType == "Email"){
                         val isVerified = firebaseAuth.currentUser?.isEmailVerified
                         if (isVerified == true){
+                            binding.verifyAccountCv.visibility = View.GONE
                             binding.verificationTv.text = "Đã xác minh"
                         }
                         else{
+                            binding.verifyAccountCv.visibility = View.VISIBLE
                             binding.verificationTv.text = "Chưa xác minh"
                         }
                     }
                     else{
+                        binding.verifyAccountCv.visibility = View.GONE
                         binding.verificationTv.text = "Đã xác minh"
                     }
 
