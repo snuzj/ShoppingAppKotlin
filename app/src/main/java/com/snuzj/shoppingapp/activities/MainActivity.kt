@@ -81,6 +81,10 @@ class MainActivity : AppCompatActivity() {
 
             }
         }
+
+        binding.sellFab.setOnClickListener {
+            startActivity(Intent(this,AdCreateActivity::class.java))
+        }
     }
 
     private fun startLoginOptions() {

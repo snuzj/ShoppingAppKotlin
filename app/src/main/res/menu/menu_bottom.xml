@@ -7,7 +7,7 @@
         android:title="Trò chuyện"
         android:icon="@drawable/round_chat_24"/>
     <item android:id="@+id/menu_sell"
-        android:title="Gian hàng"
+        android:title="Đăng tin"
         android:enabled="false"/>
     <item android:id="@+id/menu_my_ads"
         android:title="Quảng cáo"

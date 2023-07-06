@@ -6,4 +6,14 @@
     <string name="haveAccount">Đã có tài khoản? <b>Đăng nhập</b></string>
     <string name="resendOtp">Bạn chưa nhận được mã OTP? <b>Gửi lại</b></string>
     <string name="forgotpass"><b>Quên mật khẩu?</b></string>
+    <string name="condition">Tình trạng</string>
+    <string name="create_ads">Đăng tin</string>
+    <string name="brand">Thương hiệu</string>
+    <string name="category">Danh mục</string>
+    <string name="location">Địa chỉ</string>
+    <string name="price">Giá bán</string>
+    <string name="title">Tiêu đề</string>
+    <string name="description">Mô tả chi tiết</string>
+    <string name="none">null</string>
+    <string name="listPics">Đăng tối đa 10 hình ảnh</string>
 </resources>

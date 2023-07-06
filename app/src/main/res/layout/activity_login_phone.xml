@@ -66,7 +66,7 @@
         <com.google.android.material.imageview.ShapeableImageView
             android:layout_width="70dp"
             android:layout_height="70dp"
-            android:src="@drawable/ic_hufu"
+            android:src="@drawable/unnamed"
             android:background="@android:color/transparent"
             app:shapeAppearanceOverlay="@style/ImageStyle_Circle" />
         </LinearLayout>

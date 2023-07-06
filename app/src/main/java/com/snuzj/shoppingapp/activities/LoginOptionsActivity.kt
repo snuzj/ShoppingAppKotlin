@@ -147,8 +147,8 @@ class LoginOptionsActivity : AppCompatActivity() {
         hashMap["typingTo"] = ""
         hashMap["timestamp"] = timestamp
         hashMap["onlineStatus"] = true
-        hashMap["email"] = "$registeredUserEmail"
-        hashMap["uid"] = "$registeredUserUid"
+        hashMap["email"] = registeredUserEmail
+        hashMap["uid"] = registeredUserUid
 
         //set data to firebase db
         val ref = FirebaseDatabase.getInstance().getReference("Users")

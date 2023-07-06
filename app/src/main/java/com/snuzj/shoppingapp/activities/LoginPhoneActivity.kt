@@ -233,7 +233,7 @@ class LoginPhoneActivity : AppCompatActivity() {
         hashMap["timestamp"] = timestamp
         hashMap["onlineStatus"] = true
         hashMap["email"] = ""
-        hashMap["uid"] = "$registeredUserUid"
+        hashMap["uid"] = registeredUserUid
 
         val ref = FirebaseDatabase.getInstance().getReference("Users")
         ref.child(registeredUserUid!!)

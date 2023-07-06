@@ -109,57 +109,57 @@ class ProfileEditActivity : AppCompatActivity() {
 
     //1.Delete user account from account in Firebase Authentication
     private fun deleteAccount() {
-        //user account deleted
+        // Xóa tài khoản người dùng
         Log.d(TAG, "deleteAccount: ")
         progressDialog.setMessage("Đang xóa tài khoản của bạn")
         progressDialog.show()
 
         firebaseUser!!.delete()
             .addOnSuccessListener {
-                Log.d(TAG, "deleteAccount: deleted successully")
+                Log.d(TAG, "deleteAccount: deleting...")
 
-                //2. remove user's ads
-                val refUserAds = FirebaseDatabase.getInstance().getReference("Users")
-                refUserAds.orderByChild("uid").equalTo(firebaseAuth.uid)
-                    .addValueEventListener(object : ValueEventListener {
+                val myUid = firebaseAuth.uid
+
+                progressDialog.setMessage("Đang xóa thông tin liên quan")
+
+                // 2. Xóa quảng cáo của người dùng
+                val refUserAds = FirebaseDatabase.getInstance().getReference("Ads")
+                refUserAds.orderByChild("uid").equalTo(myUid)
+                    .addListenerForSingleValueEvent(object : ValueEventListener {
                         override fun onDataChange(snapshot: DataSnapshot) {
-                            for (ds in snapshot.children){
+                            for (ds in snapshot.children) {
                                 ds.ref.removeValue()
                             }
-                            //3.remove user data
+                            // 3. Xóa dữ liệu người dùng
                             progressDialog.setMessage("Đang xóa dữ liệu người dùng")
                             val refUsers = FirebaseDatabase.getInstance().getReference("Users")
-                            refUsers.child(firebaseAuth.uid!!).removeValue()
+                            refUsers.child(myUid!!)
+                                .removeValue()
                                 .addOnSuccessListener {
                                     Log.d(TAG, "onDataChange: deleted successfully")
                                     progressDialog.dismiss()
                                     startMainActivity()
                                 }
-                                .addOnFailureListener {e->
+                                .addOnFailureListener { e ->
                                     Log.e(TAG, "onDataChange: ", e)
                                     progressDialog.dismiss()
-                                    Utils.toast(this@ProfileEditActivity,"Hãy đang nhập lại để xóa tài khoản")
+                                    Utils.toast(this@ProfileEditActivity, "Hãy đăng nhập lại để xóa tài khoản")
                                     startMainActivity()
-
                                 }
-
-
                         }
 
                         override fun onCancelled(error: DatabaseError) {
-
+                            // Xử lý lỗi khi huỷ bỏ thao tác
                         }
-
-
                     })
             }
-            .addOnFailureListener { e->
+            .addOnFailureListener { e ->
                 Log.e(TAG, "deleteAccount: ", e)
                 progressDialog.dismiss()
-                Utils.toast(this,"Hãy đang nhập lại để xóa tài khoản")
-
+                Utils.toast(this, "Hãy đăng nhập lại để xóa tài khoản")
             }
     }
+
 
     private fun startMainActivity() {
         startActivity(Intent(this,MainActivity::class.java))
@@ -212,10 +212,10 @@ class ProfileEditActivity : AppCompatActivity() {
                 val uriTask = taskSnapshot.storage.downloadUrl
                 while (!uriTask.isSuccessful);
 
-                    val uploadedImageUrl = uriTask.result.toString()
-                    if(uriTask.isSuccessful){
-                        updateProfile(uploadedImageUrl)
-                    }
+                val uploadedImageUrl = uriTask.result.toString()
+                if(uriTask.isSuccessful){
+                    updateProfile(uploadedImageUrl)
+                }
             }
             .addOnFailureListener {e->
                 //failed to upload image
@@ -240,7 +240,7 @@ class ProfileEditActivity : AppCompatActivity() {
         }
         else if (myUserType.equals("Phone", true)){
             //if userType is Phone, allow change Email
-            hashMap["email"] = "$email"
+            hashMap["email"] = email
         }
         else if(myUserType.equals("Email",true) || myUserType.equals("Google",true)){
             //if userType is Email or Google, allow change Phone number

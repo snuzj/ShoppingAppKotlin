@@ -112,6 +112,7 @@
                 android:layout_below="@id/nameTil"
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                 android:hint="Ngày sinh"
+                android:clickable="true"
                 app:boxCornerRadiusBottomStart="5dp"
                 app:boxCornerRadiusBottomEnd="5dp"
                 app:boxCornerRadiusTopEnd="5dp"
