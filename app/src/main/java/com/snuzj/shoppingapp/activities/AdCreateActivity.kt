@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.snuzj.shoppingapp.activities
 
 import android.app.Activity
@@ -12,12 +14,12 @@ import android.provider.MediaStore
 import android.util.Log
 import android.view.Menu
 import android.view.View
-import android.widget.Adapter
 import android.widget.ArrayAdapter
 import android.widget.PopupMenu
 import androidx.activity.result.contract.ActivityResultContracts
-import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.storage.FirebaseStorage
 import com.snuzj.shoppingapp.AdapterImagePicked
 import com.snuzj.shoppingapp.ModelImagePicked
 import com.snuzj.shoppingapp.R
@@ -148,13 +150,11 @@ class AdCreateActivity : AppCompatActivity() {
                 }
             } else if(itemId == 2){
                 if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-
-                    val cameraPermissions = arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    requestCameraPermission.launch(cameraPermissions)
+                    pickImageGallery()
                 }
                 else{
-                    val cameraPermissions = arrayOf(android.Manifest.permission.CAMERA, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    requestCameraPermission.launch(cameraPermissions)
+                    val storagePermissions = android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    requestStoragePermission.launch(storagePermissions)
                 }
             }
             true
@@ -221,9 +221,11 @@ class AdCreateActivity : AppCompatActivity() {
 
                 val timestamp = "${Utils.getTimeStamp()}"
 
-                val modelImagePicked = ModelImagePicked(timestamp,imageUri,null,false)
+                val modelImagePicked = imageUri?.let { ModelImagePicked(timestamp, it,null,false) }
 
-                imagePickedArrayList.add(modelImagePicked)
+                if (modelImagePicked != null) {
+                    imagePickedArrayList.add(modelImagePicked)
+                }
 
                 loadImages()
             } else {
@@ -253,9 +255,11 @@ class AdCreateActivity : AppCompatActivity() {
                 //timestamp will be used as id the image picked
                 val timestamp = "${Utils.getTimeStamp()}"
                 //setup model for image
-                val modelImagePicked = ModelImagePicked(timestamp,imageUri,null,false)
+                val modelImagePicked = imageUri?.let { ModelImagePicked(timestamp, it,null,false) }
 
-                imagePickedArrayList.add(modelImagePicked) //add model to array list
+                if (modelImagePicked != null) {
+                    imagePickedArrayList.add(modelImagePicked)
+                } //add model to array list
                 loadImages() //reload images
             } else{
                 //cancelled
@@ -286,6 +290,137 @@ class AdCreateActivity : AppCompatActivity() {
         description = binding.descriptionEt.toString().trim()
 
         //validate data
+        when {
+            brand.isEmpty() -> {
+                //no brand entered in brandEt, show error
+                binding.brandEt.error = "Nhập tên thương hiệu"
+                binding.brandEt.requestFocus()
+            }
+            category.isEmpty() -> {
+                //no categoryAct entered, show error
+                binding.categoryAct.error = "Chọn danh mục"
+                binding.categoryAct.requestFocus()
+            }
+            condition.isEmpty() -> {
+                //no condition entered in conditionAct, show error
+                binding.conditionAct.error = "Chọn tình trạng"
+                binding.conditionAct.requestFocus()
+            }
+            title.isEmpty() -> {
+                //no title entered in titleEt, show error
+                binding.titleEt.error = "Nhập tiêu đề"
+                binding.titleEt.requestFocus()
+            }
+            description.isEmpty() -> {
+                //no description entered in descriptionEt, show error
+                binding.descriptionEt.error = "Nhập nội dung bài đăng"
+                binding.descriptionEt.requestFocus()
+            }
+            else -> {
+                postAd()
+            }
+        }
 
+    }
+
+    private fun postAd() {
+        Log.d(TAG, "postAd: Publishing Ad")
+
+        //show progress
+        progressDialog.setMessage("Đang đăng bài")
+        progressDialog.show()
+
+        //get current timestamp
+        val timestamp = Utils.getTimeStamp()
+
+        //firebase database Ads ref to store new Ads
+        val refAds = FirebaseDatabase.getInstance().getReference("Ads")
+
+        //keyId from ref to use as Ad id
+        val keyId = refAds.push().key
+
+        //set up data to add in firebase database
+        val hashMap = HashMap<String, Any>()
+        hashMap["id"] = "$keyId"
+        hashMap["uid"] = "${firebaseAuth.uid}"
+        hashMap["brand"] = brand
+        hashMap["category"] = category
+        hashMap["condition"] = condition
+        hashMap["address"] = address
+        hashMap["title"] = title
+        hashMap["description"] = description
+        hashMap["status"] = Utils.AD_STATUS_AVAILABLE
+        hashMap["timestamp"] = timestamp
+        hashMap["latitude"] = latitude
+        hashMap["longtitude"] = longtitude
+
+        //set data to firebase database: Ads -> AdId -> AdDataJson
+        refAds.child(keyId!!)
+            .setValue(hashMap)
+            .addOnSuccessListener {
+                Log.d(TAG, "postAd: Ad Published")
+                uploadImageStorage(keyId)
+            }
+            .addOnFailureListener{e->
+                Log.e(TAG, "postAd: ", e)
+                progressDialog.dismiss()
+                Utils.toast(this,"Thao tác thất bại. ${e.message}")
+            }
+    }
+
+    private fun uploadImageStorage(adId: String) {
+        for (i in imagePickedArrayList.indices){
+
+            val modelImagePicked = imagePickedArrayList[i]
+
+            val imageName = modelImagePicked.id
+
+            val filePathAndName = "Ads/$imageName"
+            val imageIndexForProgress = i + 1
+
+
+            val storageReference = FirebaseStorage.getInstance().getReference(filePathAndName)
+            storageReference.putFile(modelImagePicked.imageUri!!)
+                .addOnProgressListener {snapshot->
+                    //calculate the current progress of uploading image
+                    val progress = 100.0 + snapshot.bytesTransferred / snapshot.totalByteCount
+                    Log.d(TAG, "uploadImageStorage: progress $progress")
+                    val message = "Đang tải $imageIndexForProgress of ${imagePickedArrayList.size} ... Tiến trình ${progress.toInt()}"
+
+                    Log.d(TAG, "uploadImageStorage: message: $message")
+
+                    progressDialog.setMessage(message)
+                    progressDialog.show()
+
+                }
+                .addOnSuccessListener {taskSnapshot->
+                    //image uploaded
+                    Log.d(TAG, "uploadImageStorage: onSuccess")
+                    val uriTask = taskSnapshot.storage.downloadUrl
+                    while (!uriTask.isSuccessful);
+                    val uploadedImageUrl = uriTask.result
+
+                    if (uriTask.isSuccessful){
+
+                        val hashMap = HashMap<String, Any>()
+                        hashMap["id"] = "${modelImagePicked.imageUri}"
+                        hashMap["imageUrl"] = "$uploadedImageUrl"
+
+                        val ref = FirebaseDatabase.getInstance().getReference("Ads")
+                        ref.child(adId).child("Images")
+                            .child(imageName)
+                            .updateChildren(hashMap)
+                    }
+
+                    progressDialog.dismiss()
+
+                }
+                .addOnFailureListener{e->
+                    //failed to upload image
+                    Log.e(TAG, "uploadImageStorage: ", e)
+                    progressDialog.dismiss()
+
+                }
+        }
     }
 }

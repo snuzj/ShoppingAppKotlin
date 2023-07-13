@@ -10,7 +10,7 @@ class ModelImagePicked  {
 
     constructor()
 
-    constructor(id: String, imageUri: Uri, imageUrl: String, fromInternet: Boolean){
+    constructor(id: String, imageUri: Uri, imageUrl: String?, fromInternet: Boolean){
         this.id = id
         this.imageUrl = imageUrl
         this.imageUri = imageUri
